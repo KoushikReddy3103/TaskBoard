@@ -1,0 +1,22 @@
+{% extends 'taskboard/base.html' %}
+{% block content %}
+<h1>Your Tasks</h1>
+{% if tasks %}
+    <ul class="task-list">
+        {% for t in tasks %}
+          <li class="task">
+            <a href="{% url 'taskboard:task_detail' t.pk %}">
+                <strong>{{ t.title }}</strong>
+            </a>
+            <div class="meta">
+                <span class="status">{{ t.get_status_display }}</span>
+                <span class="priority">Priority: {{ t.priority }}</span>
+                {% if t.due_date %}<span class="due">Due: {{ t.due_date }}</span>{% endif %}
+            </div>
+          </li>
+          {% endfor %}
+    </ul>
+{% else %}
+   <p>No tasks yet. <a href="{% url 'taskboard:create_task' %}">Create one</a></p>
+{% endif %}
+{% endblock %}

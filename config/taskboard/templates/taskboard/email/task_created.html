@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <h2>Task created: {{ task.title }}</h2>
+        <p>{{ task.description|linebreaks }}</p>
+        <p><strong>Priority:</strong>{{ task.priority }}<br>
+            <strong>Status:</strong> {{ task.get_status_display }}<br>
+            <strong>Due:</strong> {{ task.due_date }}</p>
+        <p>View your tasks on {{ site_name }}.</p>
+    </body>
+</html>

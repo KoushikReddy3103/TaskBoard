@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>TaskBoard</title>
+        <link rel="stylesheet" href="{% static 'taskboard/styles.css' %}">
+    </head>
+    <body>
+        <header class="topbar">
+            <div class="container">
+                <a class="brand" href="{% url 'taskboard:dashboard' %}">TaskBoard</a>
+                <nav>
+                    {% if user.is_authenticated %}
+                      <span class="muted">Hi, {{ user.username }}</span>
+                      <a href="{% url 'taskboard:create_task' %}"> New Task</a>
+                      <a href="{% url 'taskboard_auth:logout' %}?next={% url 'taskboard:dashboard' %}">Logout</a>
+                    {% else %}
+                     <a href="{% url 'taskboard_auth:login' %}?next={% url 'taskboard:dashboard' %}">Login</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </header>
+
+        <main class="container">
+            {% if messages %}
+            <ul class="messages">
+                {% for m in messages %}
+                    <li class="msg {{ m.tags }}">{{ m }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </body>
+</html>

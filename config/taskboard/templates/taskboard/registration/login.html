@@ -1,0 +1,20 @@
+{% extends 'taskboard/base.html' %}
+{% block content %}
+<div class="auth-card">
+   <h1>Login</h1>
+    <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div>
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {{ form.username }}
+    </div>
+    <div>
+        <label for="{{ form.password.id_for_label }}">Password</label>
+        {{ form.password }}
+    </div>
+        <button type="submit" class="btn">Login</button>
+    </form>
+    <p class="muted">Use the superuser account or create a new user via /admin/</p>
+</div>
+{% endblock %}

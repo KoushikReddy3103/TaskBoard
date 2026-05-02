@@ -1,0 +1,12 @@
+{% extends 'taskboard/base.html' %}
+{% block content %}
+<h1>{{ task.title }}</h1>
+<p>{{ task.description|linebreaks }}</p>
+<ul class="meta">
+    <li>Status: {{ task.get_status_display }}</li>
+    <li>Priority: {{ task.priority }}</li>
+    <li>Due: {{ task.due_date }}</li>
+    <li>Created: {{ task.created_at }}</li>
+</ul>
+<a href="{% url 'taskboard:dashboard' %}">Back</a>
+{% endblock %}

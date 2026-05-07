@@ -1,22 +1,25 @@
 {% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>TaskBoard</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="TaskBoard - Organize your tasks efficiently">
+        <title>{% block title %}TaskBoard{% endblock %}</title>
         <link rel="stylesheet" href="{% static 'taskboard/styles.css' %}">
+        <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='75' font-size='75' font-weight='bold' fill='%232563eb'>✓</text></svg>">
     </head>
     <body>
         <header class="topbar">
             <div class="container">
-                <a class="brand" href="{% url 'taskboard:dashboard' %}">TaskBoard</a>
+                <a class="brand" href="{% url 'taskboard:dashboard' %}">✓ TaskBoard</a>
                 <nav>
                     {% if user.is_authenticated %}
-                      <span class="muted">Hi, {{ user.username }}</span>
-                      <a href="{% url 'taskboard:create_task' %}"> New Task</a>
-                      <a href="{% url 'taskboard_auth:logout' %}?next={% url 'taskboard:dashboard' %}">Logout</a>
+                      <span class="muted">👋 Hi, {{ user.username }}</span>
+                      <a href="{% url 'taskboard:create_task' %}">➕ New Task</a>
+                      <a href="{% url 'taskboard_auth:logout' %}?next={% url 'taskboard:dashboard' %}">🚪 Logout</a>
                     {% else %}
-                     <a href="{% url 'taskboard_auth:login' %}?next={% url 'taskboard:dashboard' %}">Login</a>
+                     <a href="{% url 'taskboard_auth:login' %}?next={% url 'taskboard:dashboard' %}">🔐 Login</a>
                     {% endif %}
                 </nav>
             </div>
@@ -32,5 +35,9 @@
             {% endif %}
             {% block content %}{% endblock %}
         </main>
+
+        <footer style="text-align: center; padding: 2rem; color: #6b7280; margin-top: 4rem; border-top: 1px solid #e5e7eb;">
+            <p>&copy; 2026 TaskBoard. Built with ❤️</p>
+        </footer>
     </body>
 </html>

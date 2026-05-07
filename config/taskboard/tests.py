@@ -27,3 +27,30 @@ class TaskAPITest(APITestCase):
         resp = self.client.get(url)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(len(resp.data['results']), 0)
+
+class TaskUIActionsTest(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username='alice', password='pass123', email='alice@example.com')
+        self.client.login(username='alice', password='pass123')
+        self.task = Task.objects.create(title='T1', owner=self.user)
+    
+    def test_update_status_post(self):
+        url = reverse('taskboard:update_status', args=[self.task.pk])
+        resp = self.client.post(url, {'status': Task.STATUS_DONE})
+        self.assertEqual(resp.status_code, 302)
+        self.task.refresh_from_db()
+        self.assertEqual(self.task.status, Task.STATUS_DONE)
+    
+    def test_delete_only_when_done(self):
+        # attempt delete when not done
+        url = reverse('taskboard:delete_task', args=[self.task.pk])
+        resp = self.client.post(url)
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(Task.objects.filter(pk=self.task.pk).exists())
+
+        # mark done then delete
+        self.task.status = Task.STATUS_DONE
+        self.task.save()
+        resp = self.client.post(url)
+        self.assertEqual(resp.status_code, 302)
+        self.assertFalse(Task.objects.filter(pk=self.task.pk).exists())

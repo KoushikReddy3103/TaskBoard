@@ -15,9 +15,14 @@ def send_task_created_email(self, task_id):
         logger.warning("send_task_created_email: Task %s not found", task_id)
         return 'task not found'
     
-    recipient_email = task.owner.email
-    if not recipient_email:
-        logger.info("send_task_created_email: Owner has no email for task %s", task_id)
+    recipients_email = [r.email for r in task.recipients.all()]
+    if task.owner and task.owner.email:
+        # include owner if not already present
+        if task.owner.email not in recipients_email:
+            recipients_email.append(task.owner.email)
+    
+    if not recipients_email:
+        logger.info("No recipients for task %s", task_id)
         return 'no recipient'
     
     subject = f"Task created: {task.title}"
@@ -29,11 +34,11 @@ def send_task_created_email(self, task_id):
         msg = EmailMultiAlternatives(subject=subject,
                                      body=text_body,
                                      from_email=settings.DEFAULT_FROM_EMAIL,
-                                    to=[recipient_email])
+                                    to=[recipients_email])
         # attach HTML alternative if template exists
         msg.attach_alternative(html_body, "text/html")
         msg.send(fail_silently=False)
-        logger.info("send_task_created_email: Sent task %s to %s", task_id, recipient_email)
+        logger.info("send_task_created_email: Sent task %s to %s", task_id, recipients_email)
         return 'sent'
     except Exception as exc:
         logger.exception("send_task_created_email: error sending email for task %s", task_id)

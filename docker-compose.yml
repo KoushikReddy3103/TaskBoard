@@ -11,7 +11,7 @@ services:
   
   worker:
     build: .
-    command: sh -c "cd config && celery -A config worker --loglevel=info"
+    command: sh -c "cd /app/config && celery -A config worker --loglevel=info"
     volumes:
       - .:/app
     depends_on:

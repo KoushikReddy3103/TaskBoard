@@ -4,6 +4,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django.urls import reverse
 from django.http import HttpResponse
+import logging
+
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 
 def login_view(request):
@@ -27,6 +31,6 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return HttpResponse("Logged out successfully", status=200)
+    logger.info(HttpResponse("Logged out successfully", status=200))
     
-    # return redirect('taskboard_auth:login')
+    return redirect('taskboard_auth:login')

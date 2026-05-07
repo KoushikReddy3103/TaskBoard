@@ -1,12 +1,55 @@
 {% extends 'taskboard/base.html' %}
+
+{% block title %}{{ task.title }} - TaskBoard{% endblock %}
+
 {% block content %}
-<h1>{{ task.title }}</h1>
-<p>{{ task.description|linebreaks }}</p>
-<ul class="meta">
-    <li>Status: {{ task.get_status_display }}</li>
-    <li>Priority: {{ task.priority }}</li>
-    <li>Due: {{ task.due_date }}</li>
-    <li>Created: {{ task.created_at }}</li>
-</ul>
-<a href="{% url 'taskboard:dashboard' %}">Back</a>
+<div style="margin-bottom: 2rem;">
+    <a href="{% url 'taskboard:dashboard' %}" style="color: #2563eb; text-decoration: none; font-weight: 500;">← Back to Tasks</a>
+</div>
+
+<div class="card">
+    <h1 style="margin-top: 0;">{{ task.title }}</h1>
+    <div class="meta" style="margin-bottom: 1.5rem;">
+        <span class="status">
+            {% if task.status == 'Done' %}✓{% elif task.status == 'Doing' %}⏳{% else %}📌{% endif %}
+            {{ task.get_status_display }}
+        </span>
+        <span class="priority">⭐ {{ task.priority }}</span>
+        {% if task.due_date %}<span class="due">📅 {{ task.due_date|date:"M d, Y" }}</span>{% endif %}
+    </div>
+
+    <div style="background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3 style="margin-top: 0; color: #6b7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Description</h3>
+        <p style="margin: 0; color: #1f2937; line-height: 1.8;">{{ task.description|linebreaks }}</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px;">
+            <p style="margin: 0; color: #6b7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Created</p>
+            <p style="margin: 0.5rem 0 0 0; font-weight: 600; color: #1f2937;">{{ task.created_at|date:"M d, Y H:i" }}</p>
+        </div>
+        <div style="background: #f9fafb; padding: 1rem; border-radius: 8px;">
+            <p style="margin: 0; color: #6b7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">Last Updated</p>
+            <p style="margin: 0.5rem 0 0 0; font-weight: 600; color: #1f2937;">{{ task.updated_at|date:"M d, Y H:i" }}</p>
+        </div>
+    </div>
+
+    {% if task.recipients.all %}
+    <div style="background: #eff6ff; padding: 1rem; border-radius: 8px; border-left: 4px solid #2563eb; margin-bottom: 1.5rem;">
+        <p style="margin: 0 0 0.5rem 0; color: #6b7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">👥 Recipients</p>
+        <p style="margin: 0; color: #1f2937;">
+            {% for r in task.recipients.all %}
+                <span style="display: inline-block; background: white; padding: 0.25rem 0.75rem; border-radius: 20px; margin-right: 0.5rem; font-size: 0.9rem;">{{ r.email }}</span>
+            {% endfor %}
+        </p>
+    </div>
+    {% endif %}
+
+    <div class="btn-group">
+        <a href="{% url 'taskboard:update_task' task.pk %}" class="btn">✏️ Edit Task</a>
+        {% if task.status == task.STATUS_DONE %}
+            <a href="{% url 'taskboard:delete_task' task.pk %}" class="btn danger">🗑️ Delete Task</a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

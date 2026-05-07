@@ -1,0 +1,10 @@
+{% extends 'taskboard/base.html' %}
+{% block content %}
+    <h1>Delete Task</h1>
+    <p>Are you sure you want to permanently delete the task</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn">Yes, delete</button>
+        <a href="{% url 'taskboard:task_detail' task.pk %}" class="btn muted">No, go back</a>
+    </form>
+{% endblock %}

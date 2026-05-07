@@ -1,6 +1,13 @@
 {% extends 'taskboard/base.html' %}
+
+{% block title %}Dashboard - TaskBoard{% endblock %}
+
 {% block content %}
-<h1>Your Tasks</h1>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <h1>📋 Your Tasks</h1>
+    <a href="{% url 'taskboard:create_task' %}" class="btn success" style="margin-right: 0;">➕ Create Task</a>
+</div>
+
 {% if tasks %}
     <ul class="task-list">
         {% for t in tasks %}
@@ -8,15 +15,29 @@
             <a href="{% url 'taskboard:task_detail' t.pk %}">
                 <strong>{{ t.title }}</strong>
             </a>
+            {% if t.description %}
+                <p style="color: #6b7280; margin: 0.5rem 0; font-size: 0.95rem;">{{ t.description|truncatewords:15 }}</p>
+            {% endif %}
             <div class="meta">
-                <span class="status">{{ t.get_status_display }}</span>
-                <span class="priority">Priority: {{ t.priority }}</span>
-                {% if t.due_date %}<span class="due">Due: {{ t.due_date }}</span>{% endif %}
+                <span class="status">
+                    {% if t.status == 'Done' %}✓{% elif t.status == 'Doing' %}⏳{% else %}📌{% endif %}
+                    {{ t.get_status_display }}
+                </span>
+                <span class="priority">⭐ Priority: {{ t.priority }}</span>
+                {% if t.due_date %}<span class="due">📅 {{ t.due_date|date:"M d, Y" }}</span>{% endif %}
+            </div>
+            <div class="btn-group" style="margin-top: auto;">
+                <a href="{% url 'taskboard:task_detail' t.pk %}" class="btn" style="margin: 0; flex: 1;">View</a>
+                <a href="{% url 'taskboard:update_task' t.pk %}" class="btn muted" style="margin: 0; flex: 1;">Edit</a>
             </div>
           </li>
-          {% endfor %}
+        {% endfor %}
     </ul>
 {% else %}
-   <p>No tasks yet. <a href="{% url 'taskboard:create_task' %}">Create one</a></p>
+   <div class="card" style="text-align: center; padding: 3rem;">
+       <h3>📭 No tasks yet!</h3>
+       <p>Get started by creating your first task.</p>
+       <a href="{% url 'taskboard:create_task' %}" class="btn" style="margin-top: 1rem;">➕ Create First Task</a>
+   </div>
 {% endif %}
 {% endblock %}

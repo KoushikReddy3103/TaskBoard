@@ -1,0 +1,123 @@
+{% extends 'taskboard/base.html' %}
+
+{% block title %}Edit Task - TaskBoard{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 3rem;">
+    <a href="{% url 'taskboard:task_detail' task.pk %}" style="color: #2563eb; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.5rem;">← Back to Task</a>
+</div>
+
+<h1 style="margin-bottom: 2.5rem;">✏️ Edit Task</h1>
+
+<form method="post" novalidate style="margin-bottom: 3rem;">
+    {% csrf_token %}
+    
+    {% if form.non_field_errors %}
+        <div class="msg error" style="margin-bottom: 2rem;">
+            <strong>Error:</strong>
+            <ul class="errorlist">
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="form-group" style="margin-bottom: 2rem;">
+        <label for="{{ form.title.id_for_label }}">📝 Task Title</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+            <ul class="errorlist">
+                {% for error in form.title.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div class="form-group" style="margin-bottom: 2.5rem;">
+        <label for="{{ form.description.id_for_label }}">📄 Description</label>
+        {{ form.description }}
+        {% if form.description.errors %}
+            <ul class="errorlist">
+                {% for error in form.description.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="{{ form.status.id_for_label }}">📊 Status</label>
+            {{ form.status }}
+            {% if form.status.errors %}
+                <ul class="errorlist">
+                    {% for error in form.status.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="{{ form.priority.id_for_label }}">⭐ Priority (1-5)</label>
+            {{ form.priority }}
+            {% if form.priority.errors %}
+                <ul class="errorlist">
+                    {% for error in form.priority.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label for="{{ form.due_date.id_for_label }}">📅 Due Date</label>
+            {{ form.due_date }}
+            {% if form.due_date.errors %}
+                <ul class="errorlist">
+                    {% for error in form.due_date.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="form-group" style="margin-bottom: 2.5rem;">
+        <label for="{{ form.recipients.id_for_label }}">👥 Recipients (Comma-separated emails)</label>
+        {{ form.recipients }}
+        {% if form.recipients.help_text %}
+            <small style="color: #6b7280; display: block; margin-top: 0.5rem;">{{ form.recipients.help_text|safe }}</small>
+        {% endif %}
+        {% if form.recipients.errors %}
+            <ul class="errorlist">
+                {% for error in form.recipients.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #2563eb; margin-bottom: 2.5rem;">
+        <p style="margin: 0; color: #1e40af; font-size: 0.9rem; line-height: 1.6;">
+            ℹ️ <strong>Note:</strong> Changes will be saved immediately when you click "Save Changes". Recipients will be notified if you update the task.
+        </p>
+    </div>
+
+    <div class="btn-group" style="margin-bottom: 2rem;">
+        <button type="submit" class="btn success" style="flex: 1;">💾 Save Changes</button>
+        <a href="{% url 'taskboard:task_detail' task.pk %}" class="btn muted" style="flex: 1; text-align: center;">Cancel</a>
+    </div>
+</form>
+
+<div style="margin-top: 3rem; padding: 1.5rem; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+    <h4 style="margin: 0 0 1rem 0; color: #92400e; font-size: 1rem;">⏱️ Task Timeline</h4>
+    <ul style="margin: 0; padding-left: 1.5rem; color: #78350f; font-size: 0.95rem; line-height: 1.8;">
+        <li>Created: <strong>{{ task.created_at|date:"M d, Y H:i" }}</strong></li>
+        <li>Last Updated: <strong>{{ task.updated_at|date:"M d, Y H:i" }}</strong></li>
+        <li>Current Status: <strong>{{ task.get_status_display }}</strong></li>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+Subject: [TaskBoard] Task created: {{ task.title }}
+
+Hello {{ task.owner.get_full_name|default:task.owner.username }},
+
+A new task has been created on {{ site_name }}.
+
+Title: {{ task.title }}
+Description:
+{{ task.description|default:"(no description provided)" }}
+
+Status: {{ task.get_status_display }}
+Priority: {{ task.priority }}
+Due date: {{ task.due_date|default:"No due date" }}
+
+You can view the task in your TaskBoard dashboard.
+
+Regards,
+{{ site_name }}
